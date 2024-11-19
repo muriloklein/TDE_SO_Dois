@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador de Alocação de Blocos Lógicos</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Simulador de Alocação de Blocos Lógicos</h1>
+      <div class="controls">
+        <label for="disk-size">Tamanho do Disco (em blocos):</label>
+        <input type="number" id="disk-size" min="1" max="100" value="20" />
+
+        <label for="allocation-type">Tipo de Alocação:</label>
+        <select id="allocation-type">
+          <option value="contigua">Contígua</option>
+          <option value="encadeada">Encadeada</option>
+          <option value="indexada">Indexada</option>
+        </select>
+
+        <button id="initialize">Inicializar Disco</button>
+
+        <hr />
+
+        <label for="file-name">Nome do Arquivo:</label>
+        <input type="text" id="file-name" />
+
+        <label for="file-blocks">Quantidade de Blocos:</label>
+        <input type="number" id="file-blocks" min="1" />
+
+        <button id="create-file">Criar Arquivo</button>
+        <button id="delete-file">Excluir Arquivo</button>
+      </div>
+
+      <div id="disk" class="disk"></div>
+
+      <h2>Tabela de Alocação</h2>
+      <table id="allocation-table">
+        <thead>
+          <tr>
+            <th>Arquivo</th>
+            <th>Blocos Alocados</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
