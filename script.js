@@ -191,12 +191,22 @@ function allocateChainedBlocks(start, fileBlocks, fileName) {
 
 function allocateIndexedBlocks(start, fileBlocks, fileName) {
   let blocks = [];
+  let indexBlock = findFreeBlock(); // Encontrar um bloco para armazenar a tabela de índices
+
+  if (indexBlock === -1) {
+    alert("Espaço insuficiente para alocação indexada.");
+    return;
+  }
+
+  // Marcar o bloco de índice como ocupado e adicionar à lista de blocos.
+  disk[indexBlock] = { free: false, file: fileName, isIndex: true };
+  blocks.push(indexBlock); // Apenas adiciona o bloco de índice
 
   for (let i = 0; i < fileBlocks; i++) {
     const block = findRandomFreeBlock();
     if (block !== -1) {
       disk[block] = { free: false, file: fileName };
-      blocks.push(block);
+      blocks.push(block); // Adiciona apenas os blocos de dados, não o de índice
     } else {
       alert("Espaço insuficiente para alocação indexada.");
       blocks.forEach((b) => (disk[b] = { free: true }));
@@ -204,7 +214,12 @@ function allocateIndexedBlocks(start, fileBlocks, fileName) {
     }
   }
 
-  files.push({ name: fileName, blocks: blocks });
+  // Armazenar o nome do arquivo, os blocos de dados e o bloco de índice
+  files.push({
+    name: fileName,
+    blocks: blocks.slice(1), // Exclui o bloco de índice da lista de blocos de dados
+    indexBlock: indexBlock,
+  });
 }
 
 function findRandomFreeBlock() {
@@ -236,7 +251,14 @@ function renderAllocationTable() {
 
     row.innerHTML = `
       <td>${file.name}</td>
-      <td>${file.blocks.join(", ")}</td>
+      <td>
+        ${
+          file.indexBlock !== undefined
+            ? "Índice: " + file.indexBlock + " | "
+            : ""
+        }
+        ${file.blocks.join(", ")}
+      </td>
       <td style="background-color: ${fileColor}; width: 20px;"></td>
     `;
 
@@ -253,6 +275,10 @@ function deleteFile(fileName) {
     return;
   }
 
+  if (file.indexBlock !== undefined) {
+    disk[file.indexBlock] = { free: true };
+  }
+
   file.blocks.forEach((block) => {
     disk[block] = { free: true };
   });
@@ -266,10 +292,16 @@ function highlightFile(fileName) {
   const file = files.find((f) => f.name === fileName);
   if (!file) return;
 
+  const blocksToHighlight = [...file.blocks];
+
+  if (file.indexBlock !== undefined) {
+    blocksToHighlight.unshift(file.indexBlock);
+  }
+
   const blocks = document.querySelectorAll(".block");
   blocks.forEach((block) => block.classList.remove("highlight"));
 
-  file.blocks.forEach((blockIndex) => {
+  blocksToHighlight.forEach((blockIndex) => {
     blocks[blockIndex].classList.add("highlight");
   });
 }
