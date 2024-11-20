@@ -232,7 +232,14 @@ function renderAllocationTable() {
 
   files.forEach((file) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${file.name}</td><td>${file.blocks.join(", ")}</td>`;
+    const fileColor = getFileColor(file.name);
+
+    row.innerHTML = `
+      <td>${file.name}</td>
+      <td>${file.blocks.join(", ")}</td>
+      <td style="background-color: ${fileColor}; width: 20px;"></td>
+    `;
+
     row.addEventListener("click", () => highlightFile(file.name));
     tableBody.appendChild(row);
   });
