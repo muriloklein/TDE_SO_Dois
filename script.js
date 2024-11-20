@@ -5,21 +5,58 @@ let allocationType = "contigua";
 
 document.getElementById("initialize").addEventListener("click", () => {
   diskSize = parseInt(document.getElementById("disk-size").value);
+
+  if (!diskSize || diskSize <= 0) {
+    alert("Informe um tamanho válido!");
+  }
+
   allocationType = document.getElementById("allocation-type").value;
+
+  if (!allocationType) {
+    alert("Informe o tipo de alocação!");
+  }
+
   initializeDisk(diskSize);
   renderDisk();
   renderAllocationTable();
 });
 
 document.getElementById("create-file").addEventListener("click", () => {
-  const fileName = document.getElementById("file-name").value;
+  const fileName = document.getElementById("file-name").value.trim();
   const fileBlocks = parseInt(document.getElementById("file-blocks").value);
+
+  if (!fileName) {
+    alert("Por favor, insira um nome para o arquivo.");
+    return;
+  }
+
+  if (fileBlocks <= 0 || isNaN(fileBlocks)) {
+    alert("Insira uma quantidade válida de blocos.");
+    return;
+  }
+
+  if (files.some((f) => f.name === fileName)) {
+    alert("Um arquivo com este nome já existe.");
+    return;
+  }
+
   createFile(fileName, fileBlocks);
+
+  document.getElementById("file-name").value = "";
+  document.getElementById("file-blocks").value = "";
 });
 
 document.getElementById("delete-file").addEventListener("click", () => {
-  const fileName = document.getElementById("file-name").value;
+  const fileName = document.getElementById("file-name").value.trim();
+
+  if (!fileName) {
+    alert("Por favor, insira o nome do arquivo a ser excluído.");
+    return;
+  }
+
   deleteFile(fileName);
+
+  document.getElementById("file-name").value = "";
 });
 
 function initializeDisk(size) {
@@ -34,13 +71,15 @@ function renderDisk() {
     const blockElement = document.createElement("div");
     blockElement.classList.add("block");
     blockElement.classList.add(block.free ? "free" : "allocated");
-    blockElement.textContent = block.free ? "" : "X";
+    if (!block.free) {
+      blockElement.dataset.file = block.file;
+    }
+    blockElement.textContent = block.free ? "" : index;
     diskContainer.appendChild(blockElement);
   });
 }
 
 function createFile(fileName, fileBlocks) {
-  if (fileBlocks <= 0) return;
   let startBlock = -1;
 
   if (allocationType === "contigua") {
@@ -60,7 +99,9 @@ function createFile(fileName, fileBlocks) {
     }
   }
 
-  if (startBlock !== -1) {
+  if (startBlock === -1) {
+    alert("Não há espaço suficiente para alocar o arquivo.");
+  } else {
     renderDisk();
     renderAllocationTable();
   }
@@ -98,28 +139,46 @@ function findFreeBlock() {
 }
 
 function allocateChainedBlocks(start, fileBlocks, fileName) {
+  let blocks = [];
   let currentBlock = start;
+
   for (let i = 0; i < fileBlocks; i++) {
     disk[currentBlock] = {
       free: false,
       file: fileName,
-      next: i < fileBlocks - 1 ? currentBlock + 1 : null,
+      next: null,
     };
-    currentBlock = currentBlock + 1;
+    blocks.push(currentBlock);
+
+    const nextBlock = findFreeBlock();
+    if (i < fileBlocks - 1) {
+      if (nextBlock === -1) {
+        alert("Espaço insuficiente no disco. Desfazer operação.");
+        blocks.forEach((block) => (disk[block] = { free: true }));
+        return;
+      }
+      disk[currentBlock].next = nextBlock;
+      currentBlock = nextBlock;
+    }
   }
-  files.push({ name: fileName, blocks: [start] });
+
+  files.push({ name: fileName, blocks });
 }
 
 function allocateIndexedBlocks(start, fileBlocks, fileName) {
   let blocks = [];
   for (let i = 0; i < fileBlocks; i++) {
-    let block = findFreeBlock();
+    const block = findFreeBlock();
     if (block !== -1) {
       disk[block] = { free: false, file: fileName };
       blocks.push(block);
+    } else {
+      alert("Espaço insuficiente para alocação indexada.");
+      blocks.forEach((b) => (disk[b] = { free: true }));
+      return;
     }
   }
-  files.push({ name: fileName, blocks: blocks });
+  files.push({ name: fileName, blocks: [start, ...blocks] });
 }
 
 function renderAllocationTable() {
@@ -127,21 +186,40 @@ function renderAllocationTable() {
     .getElementById("allocation-table")
     .querySelector("tbody");
   tableBody.innerHTML = "";
+
   files.forEach((file) => {
     const row = document.createElement("tr");
     row.innerHTML = `<td>${file.name}</td><td>${file.blocks.join(", ")}</td>`;
+    row.addEventListener("click", () => highlightFile(file.name));
     tableBody.appendChild(row);
   });
 }
 
 function deleteFile(fileName) {
   const file = files.find((f) => f.name === fileName);
-  if (file) {
-    file.blocks.forEach((block) => {
-      disk[block] = { free: true };
-    });
-    files = files.filter((f) => f.name !== fileName);
-    renderDisk();
-    renderAllocationTable();
+
+  if (!file) {
+    alert("Arquivo não encontrado.");
+    return;
   }
+
+  file.blocks.forEach((block) => {
+    disk[block] = { free: true };
+  });
+
+  files = files.filter((f) => f.name !== fileName);
+  renderDisk();
+  renderAllocationTable();
+}
+
+function highlightFile(fileName) {
+  const file = files.find((f) => f.name === fileName);
+  if (!file) return;
+
+  const blocks = document.querySelectorAll(".block");
+  blocks.forEach((block) => block.classList.remove("highlight"));
+
+  file.blocks.forEach((blockIndex) => {
+    blocks[blockIndex].classList.add("highlight");
+  });
 }

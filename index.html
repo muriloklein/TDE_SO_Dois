@@ -9,13 +9,17 @@
   <body>
     <div class="container">
       <h1>Simulador de Alocação de Blocos Lógicos</h1>
+      <p>
+        Use o simulador para entender como os três tipos de alocação funcionam.
+      </p>
+
       <div class="controls">
         <label for="disk-size">Tamanho do Disco (em blocos):</label>
         <input type="number" id="disk-size" min="1" max="100" value="20" />
 
         <label for="allocation-type">Tipo de Alocação:</label>
         <select id="allocation-type">
-          <option value="contigua">Contígua</option>
+          <option value="contigua" selected>Contígua</option>
           <option value="encadeada">Encadeada</option>
           <option value="indexada">Indexada</option>
         </select>
@@ -46,6 +50,23 @@
         </thead>
         <tbody></tbody>
       </table>
+
+      <h2>Instruções de Uso</h2>
+      <p>
+        1. Escolha o tamanho do disco e o tipo de alocação e clique em
+        "Inicializar Disco".
+      </p>
+      <p>
+        2. Para criar arquivos, preencha o nome e a quantidade de blocos e
+        clique em "Criar Arquivo".
+      </p>
+      <p>
+        3. Para excluir arquivos, informe o nome e clique em "Excluir Arquivo".
+      </p>
+      <p>
+        4. Para visualizar os blocos de um arquivo específico, clique no nome do
+        arquivo na Tabela de Alocação.
+      </p>
     </div>
 
     <script src="script.js"></script>
