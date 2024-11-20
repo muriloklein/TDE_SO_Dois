@@ -64,6 +64,27 @@ function initializeDisk(size) {
   files = [];
 }
 
+const colors = [
+  "#FF5733",
+  "#33FF57",
+  "#3357FF",
+  "#FF33A1",
+  "#A133FF",
+  "#FFC300",
+  "#FF5733",
+  "#DAF7A6",
+  "#C70039",
+  "#581845",
+];
+
+function getFileColor(fileName) {
+  const hash = Array.from(fileName).reduce(
+    (sum, char) => sum + char.charCodeAt(0),
+    0
+  );
+  return colors[hash % colors.length];
+}
+
 function renderDisk() {
   const diskContainer = document.getElementById("disk");
   diskContainer.innerHTML = "";
@@ -72,6 +93,8 @@ function renderDisk() {
     blockElement.classList.add("block");
     blockElement.classList.add(block.free ? "free" : "allocated");
     if (!block.free) {
+      const fileColor = getFileColor(block.file);
+      blockElement.style.backgroundColor = fileColor;
       blockElement.dataset.file = block.file;
     }
     blockElement.textContent = block.free ? "" : index;
