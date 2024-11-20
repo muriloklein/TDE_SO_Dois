@@ -19,6 +19,7 @@ document.getElementById("initialize").addEventListener("click", () => {
   initializeDisk(diskSize);
   renderDisk();
   renderAllocationTable();
+  updateAllocationType(allocationType);
 });
 
 document.getElementById("create-file").addEventListener("click", () => {
@@ -245,4 +246,10 @@ function highlightFile(fileName) {
   file.blocks.forEach((blockIndex) => {
     blocks[blockIndex].classList.add("highlight");
   });
+}
+
+function updateAllocationType(type) {
+  document.getElementById(
+    "allocation-type-text"
+  ).innerText = `Tipo de Alocação: ${type}`;
 }

@@ -113,3 +113,8 @@ tr {
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }
+
+#allocation-type-text {
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
