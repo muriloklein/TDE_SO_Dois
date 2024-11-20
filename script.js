@@ -167,22 +167,22 @@ function allocateChainedBlocks(start, fileBlocks, fileName) {
   let currentBlock = start;
 
   for (let i = 0; i < fileBlocks; i++) {
-    disk[currentBlock] = {
+    const randomBlock = findRandomFreeBlock();
+    if (randomBlock === -1) {
+      alert("Espaço insuficiente no disco. Desfazer operação.");
+      blocks.forEach((block) => (disk[block] = { free: true }));
+      return;
+    }
+
+    disk[randomBlock] = {
       free: false,
       file: fileName,
       next: null,
     };
-    blocks.push(currentBlock);
+    blocks.push(randomBlock);
 
-    const nextBlock = findFreeBlock();
     if (i < fileBlocks - 1) {
-      if (nextBlock === -1) {
-        alert("Espaço insuficiente no disco. Desfazer operação.");
-        blocks.forEach((block) => (disk[block] = { free: true }));
-        return;
-      }
-      disk[currentBlock].next = nextBlock;
-      currentBlock = nextBlock;
+      disk[randomBlock].next = findRandomFreeBlock();
     }
   }
 
@@ -191,8 +191,9 @@ function allocateChainedBlocks(start, fileBlocks, fileName) {
 
 function allocateIndexedBlocks(start, fileBlocks, fileName) {
   let blocks = [];
+
   for (let i = 0; i < fileBlocks; i++) {
-    const block = findFreeBlock();
+    const block = findRandomFreeBlock();
     if (block !== -1) {
       disk[block] = { free: false, file: fileName };
       blocks.push(block);
@@ -202,7 +203,25 @@ function allocateIndexedBlocks(start, fileBlocks, fileName) {
       return;
     }
   }
-  files.push({ name: fileName, blocks: [start, ...blocks] });
+
+  files.push({ name: fileName, blocks: blocks });
+}
+
+function findRandomFreeBlock() {
+  const freeBlocks = [];
+
+  for (let i = 0; i < disk.length; i++) {
+    if (disk[i].free) {
+      freeBlocks.push(i);
+    }
+  }
+
+  if (freeBlocks.length === 0) {
+    return -1;
+  }
+
+  const randomIndex = Math.floor(Math.random() * freeBlocks.length);
+  return freeBlocks[randomIndex];
 }
 
 function renderAllocationTable() {
