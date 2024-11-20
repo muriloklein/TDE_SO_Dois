@@ -17,6 +17,10 @@ body {
   max-width: 800px;
 }
 
+#informationText {
+  margin-top: 0px;
+}
+
 h1,
 h2 {
   text-align: center;
