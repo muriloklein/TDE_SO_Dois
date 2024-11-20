@@ -17,4 +17,4 @@ Demonstrar as três principais formas de alocação de blocos lógicos:
 ## Como Rodar
 
 1. Clone o repositório.
-2. Inicie a aplicação:
+2. Inicie a aplicação.

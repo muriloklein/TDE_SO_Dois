@@ -114,12 +114,12 @@ function createFile(fileName, fileBlocks) {
   } else if (allocationType === "encadeada") {
     startBlock = findFreeBlock();
     if (startBlock !== -1) {
-      allocateChainedBlocks(startBlock, fileBlocks, fileName);
+      allocateChainedBlocks(fileBlocks, fileName);
     }
   } else if (allocationType === "indexada") {
     startBlock = findFreeBlock();
     if (startBlock !== -1) {
-      allocateIndexedBlocks(startBlock, fileBlocks, fileName);
+      allocateIndexedBlocks(fileBlocks, fileName);
     }
   }
 
@@ -162,9 +162,8 @@ function findFreeBlock() {
   return -1;
 }
 
-function allocateChainedBlocks(start, fileBlocks, fileName) {
+function allocateChainedBlocks(fileBlocks, fileName) {
   let blocks = [];
-  let currentBlock = start;
 
   for (let i = 0; i < fileBlocks; i++) {
     const randomBlock = findRandomFreeBlock();
@@ -189,24 +188,23 @@ function allocateChainedBlocks(start, fileBlocks, fileName) {
   files.push({ name: fileName, blocks });
 }
 
-function allocateIndexedBlocks(start, fileBlocks, fileName) {
+function allocateIndexedBlocks(fileBlocks, fileName) {
   let blocks = [];
-  let indexBlock = findFreeBlock(); // Encontrar um bloco para armazenar a tabela de índices
+  let indexBlock = findFreeBlock();
 
   if (indexBlock === -1) {
     alert("Espaço insuficiente para alocação indexada.");
     return;
   }
 
-  // Marcar o bloco de índice como ocupado e adicionar à lista de blocos.
   disk[indexBlock] = { free: false, file: fileName, isIndex: true };
-  blocks.push(indexBlock); // Apenas adiciona o bloco de índice
+  blocks.push(indexBlock);
 
   for (let i = 0; i < fileBlocks; i++) {
     const block = findRandomFreeBlock();
     if (block !== -1) {
       disk[block] = { free: false, file: fileName };
-      blocks.push(block); // Adiciona apenas os blocos de dados, não o de índice
+      blocks.push(block);
     } else {
       alert("Espaço insuficiente para alocação indexada.");
       blocks.forEach((b) => (disk[b] = { free: true }));
@@ -214,10 +212,9 @@ function allocateIndexedBlocks(start, fileBlocks, fileName) {
     }
   }
 
-  // Armazenar o nome do arquivo, os blocos de dados e o bloco de índice
   files.push({
     name: fileName,
-    blocks: blocks.slice(1), // Exclui o bloco de índice da lista de blocos de dados
+    blocks: blocks.slice(1),
     indexBlock: indexBlock,
   });
 }
@@ -257,7 +254,7 @@ function renderAllocationTable() {
             ? "Índice: " + file.indexBlock + " | "
             : ""
         }
-        ${file.blocks.join(", ")}
+        ${file.blocks.join(" → ")}
       </td>
       <td style="background-color: ${fileColor}; width: 20px;"></td>
     `;
