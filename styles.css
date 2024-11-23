@@ -4,7 +4,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   margin: 0;
 }
 
@@ -15,6 +14,11 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 80%;
   max-width: 800px;
+  margin-bottom: 30px;
+}
+
+.text-center {
+  text-align: center;
 }
 
 #informationText {
@@ -74,6 +78,7 @@ button:hover {
   line-height: 30px;
   font-size: 12px;
   color: #fff;
+  border-radius: 50%;
 }
 
 .block.free {

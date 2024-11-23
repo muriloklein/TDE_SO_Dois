@@ -6,8 +6,9 @@ let allocationType = "contigua";
 document.getElementById("initialize").addEventListener("click", () => {
   diskSize = parseInt(document.getElementById("disk-size").value);
 
-  if (!diskSize || diskSize <= 0) {
+  if (!diskSize || diskSize <= 0 || diskSize > 256) {
     alert("Informe um tamanho válido!");
+    return;
   }
 
   allocationType = document.getElementById("allocation-type").value;
@@ -27,7 +28,7 @@ document.getElementById("create-file").addEventListener("click", () => {
   const fileBlocks = parseInt(document.getElementById("file-blocks").value);
 
   if (!fileName) {
-    alert("Por favor, insira um nome para o arquivo.");
+    alert("Insira um nome para o arquivo.");
     return;
   }
 
@@ -51,7 +52,7 @@ document.getElementById("delete-file").addEventListener("click", () => {
   const fileName = document.getElementById("file-name").value.trim();
 
   if (!fileName) {
-    alert("Por favor, insira o nome do arquivo a ser excluído.");
+    alert("Insira o nome do arquivo a ser excluído.");
     return;
   }
 
@@ -76,6 +77,20 @@ const colors = [
   "#DAF7A6",
   "#C70039",
   "#581845",
+  "#16A085",
+  "#F4D03F",
+  "#E67E22",
+  "#1ABC9C",
+  "#8E44AD",
+  "#3498DB",
+  "#E74C3C",
+  "#2ECC71",
+  "#9B59B6",
+  "#34495E",
+  "#F39C12",
+  "#D35400",
+  "#2C3E50",
+  "#7F8C8D",
 ];
 
 function getFileColor(fileName) {
@@ -124,7 +139,7 @@ function createFile(fileName, fileBlocks) {
   }
 
   if (startBlock === -1) {
-    alert("Não há espaço suficiente para alocar o arquivo.");
+    alert("Não tem espaço suficiente para alocar o arquivo.");
   } else {
     renderDisk();
     renderAllocationTable();

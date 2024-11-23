@@ -3,19 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simulador de Alocação de Blocos Lógicos</title>
+    <title>Simulador de Formas de Alocação de Blocos Lógicos</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="container">
-      <h1>Simulador de Alocação de Blocos Lógicos</h1>
-      <p>
-        Use o simulador para entender como os três tipos de alocação funcionam.
-      </p>
+      <div class="text-center">
+        <h1>Simulador de Formas de Alocação de Blocos Lógicos</h1>
+        <p>Simulador para entender como os três tipos de alocação funcionam.</p>
+      </div>
 
+      <div>
+        <h2>Instruções de Uso</h2>
+        <p>
+          1. Escolha o tamanho do disco e o tipo de alocação e clique em
+          "Iniciar Disco".
+        </p>
+        <p>
+          2. Para criar arquivos, preencha o nome e a quantidade de blocos e
+          clique em "Criar".
+        </p>
+        <p>3. Para excluir arquivos, informe o nome e clique em "Excluir".</p>
+        <p>
+          4. Para visualizar os blocos de um arquivo específico, clique no nome
+          do arquivo na Tabela de Alocação.
+        </p>
+      </div>
+      <br />
       <div class="controls">
         <label for="disk-size">Tamanho do Disco (em blocos):</label>
         <input type="number" id="disk-size" min="1" max="100" value="20" />
+        <small
+          ><strong><em>Tamanho máximo de 256 e mínimo de 1</em></strong></small
+        >
 
         <label for="allocation-type">Tipo de Alocação:</label>
         <select id="allocation-type">
@@ -24,18 +44,18 @@
           <option value="indexada">Indexada</option>
         </select>
 
-        <button id="initialize">Inicializar Disco</button>
+        <button id="initialize">Iniciar Disco</button>
 
         <hr />
 
         <label for="file-name">Nome do Arquivo:</label>
         <input type="text" id="file-name" />
 
-        <label for="file-blocks">Quantidade de Blocos:</label>
+        <label for="file-blocks">Quantidade de Blocos do Arquivo:</label>
         <input type="number" id="file-blocks" min="1" />
 
-        <button id="create-file">Criar Arquivo</button>
-        <button id="delete-file">Excluir Arquivo</button>
+        <button id="create-file">Criar</button>
+        <button id="delete-file">Excluir</button>
       </div>
 
       <div
@@ -47,7 +67,7 @@
 
       <div id="disk" class="disk"></div>
 
-      <h2>Tabela de Alocação</h2>
+      <h2>Tabela de Dados</h2>
       <table id="allocation-table">
         <thead>
           <tr>
@@ -57,23 +77,6 @@
         </thead>
         <tbody></tbody>
       </table>
-
-      <h2>Instruções de Uso</h2>
-      <p>
-        1. Escolha o tamanho do disco e o tipo de alocação e clique em
-        "Inicializar Disco".
-      </p>
-      <p>
-        2. Para criar arquivos, preencha o nome e a quantidade de blocos e
-        clique em "Criar Arquivo".
-      </p>
-      <p>
-        3. Para excluir arquivos, informe o nome e clique em "Excluir Arquivo".
-      </p>
-      <p>
-        4. Para visualizar os blocos de um arquivo específico, clique no nome do
-        arquivo na Tabela de Alocação.
-      </p>
     </div>
 
     <script src="script.js"></script>
